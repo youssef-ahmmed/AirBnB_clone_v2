@@ -44,7 +44,9 @@ class DBStorage:
                     key = instance.__class__.__name__ + '.' + instance.id
                     obj_dict.update({key: instance})
         else:
-            rows = self.__session.query(eval(cls)).all()
+            if type(cls) == str:
+                cls = eval(cls)
+            rows = self.__session.query(cls).all()
             for instance in rows:
                 key = instance.__class__.__name__ + '.' + instance.id
                 obj_dict.update({key: instance})
