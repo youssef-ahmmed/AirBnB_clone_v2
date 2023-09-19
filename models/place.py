@@ -1,5 +1,7 @@
 #!/usr/bin/python3
 """ Place Module for HBNB project """
+import os
+
 from sqlalchemy import Column, String, Integer, Float, ForeignKey, Table
 from sqlalchemy.orm import relationship
 
@@ -39,23 +41,24 @@ class Place(BaseModel, Base):
     amenities = relationship('Amenity', secondary='place_amenity',
                              viewonly=False)
 
-    @property
-    def reviews(self):
-        """Get/set linked Reviews"""
-        return [review for review in self.reviews if
-                review.place_id == self.id]
+    if os.getenv("HBNB_TYPE_STORAGE", None) != "db":
+        @property
+        def reviews(self):
+            """Get/set linked Reviews"""
+            return [review for review in self.reviews if
+                    review.place_id == self.id]
 
-    @property
-    def amenities(self):
-        """Get/set linked Amenities"""
-        amenity_list = []
-        for amenity in list(models.storage.all(Amenity).values()):
-            if amenity.id in self.amenity_ids:
-                amenity_list.append(amenity)
-        return amenity_list
+        @property
+        def amenities(self):
+            """Get/set linked Amenities"""
+            amenity_list = []
+            for amenity in list(models.storage.all(Amenity).values()):
+                if amenity.id in self.amenity_ids:
+                    amenity_list.append(amenity)
+            return amenity_list
 
-    @amenities.setter
-    def amenities(self, amenity):
-        """Get/set linked Amenities"""
-        if type(amenity) == Amenity:
-            self.amenity_ids.append(amenity.id)
+        @amenities.setter
+        def amenities(self, amenity):
+            """Get/set linked Amenities"""
+            if type(amenity) == Amenity:
+                self.amenity_ids.append(amenity.id)
