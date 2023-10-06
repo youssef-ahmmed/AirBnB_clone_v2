@@ -1,6 +1,7 @@
 #!/usr/bin/python3
 """Full deployment"""
 
+from fabric.api import env
 import os
 
 do_pack = __import__('1-pack_web_static').do_pack
