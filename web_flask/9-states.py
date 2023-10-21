@@ -20,7 +20,6 @@ def states():
 @app.route('/states/<id>')
 def states_by_id(id):
     for state in data.values():
-        print(state.id)
         if state.id == id:
             obj = state
             return render_template("9-states.html",
