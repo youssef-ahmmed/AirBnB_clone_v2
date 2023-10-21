@@ -1,6 +1,6 @@
 #!/usr/bin/python3
 """script that starts a Flask web application"""
-from flask import Flask, render_template, redirect, url_for
+from flask import Flask, render_template
 
 from models import storage
 
@@ -19,25 +19,13 @@ def states():
 
 @app.route('/states/<id>')
 def states_by_id(id):
-    obj = None
     for state in data.values():
+        print(state.id)
         if state.id == id:
             obj = state
             return render_template("9-states.html",
-                                   id=id, state=obj)
-    return """
-        <!DOCTYPE html>
-        <HTML lang="en">
-            <HEAD>
-                <TITLE>HBNB</TITLE>
-            </HEAD>
-            <BODY>
-        
-                <H1>Not found!</H1>
-        
-            </BODY>
-        </HTML>
-    """, 404
+                                   id=id, state=obj, notfound=False)
+    return render_template("9-states.html", notfound=True)
 
 
 @app.teardown_appcontext
