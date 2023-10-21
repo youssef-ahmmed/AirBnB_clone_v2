@@ -25,7 +25,19 @@ def states_by_id(id):
             obj = state
             return render_template("9-states.html",
                                    id=id, state=obj)
-    return "<h1>Not Found</h1>", 404
+    return """
+        <!DOCTYPE html>
+        <HTML lang="en">
+            <HEAD>
+                <TITLE>HBNB</TITLE>
+            </HEAD>
+            <BODY>
+        
+                <H1>Not found!</H1>
+        
+            </BODY>
+        </HTML>
+    """, 404
 
 
 @app.teardown_appcontext
