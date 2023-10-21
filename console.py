@@ -84,7 +84,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, command):
         """ Method to exit the HBNB console"""
-        exit()
+        return True
 
     def help_quit(self):
         """ Prints the help documentation for quit  """
@@ -93,7 +93,7 @@ class HBNBCommand(cmd.Cmd):
     def do_EOF(self, arg):
         """ Handles EOF to exit program """
         print()
-        exit()
+        return True
 
     def help_EOF(self):
         """ Prints the help documentation for EOF """
@@ -116,19 +116,20 @@ class HBNBCommand(cmd.Cmd):
         obj = eval(args_list[0])()
         args_list.remove(args_list[0])
 
-        for arg in args_list:
-            arg = arg.split('=')
-            key = arg[0]
-            value = arg[1]
-            if value.startswith('"') or value.startswith("'"):
-                value = value.strip('"').strip("'")
-                value = value.replace('"', '\"').replace("'", "\'")\
-                             .replace('_', ' ')
-            elif '.' in value:
-                value = float(value)
-            else:
-                value = int(value)
-            setattr(obj, key, value)
+        if args_list and args_list[0].find('=') != -1:
+            for arg in args_list:
+                arg = arg.split('=')
+                key = arg[0]
+                value = arg[1]
+                if value.startswith('"') or value.startswith("'"):
+                    value = value.strip('"').strip("'")
+                    value = value.replace('"', '\"').replace("'", "\'")\
+                                 .replace('_', ' ')
+                elif '.' in value:
+                    value = float(value)
+                else:
+                    value = int(value)
+                setattr(obj, key, value)
 
         obj.save()
         print(obj.id)
@@ -161,7 +162,7 @@ class HBNBCommand(cmd.Cmd):
 
         key = c_name + "." + c_id
         try:
-            print(storage._FileStorage__objects[key])
+            print(storage.all()[key])
         except KeyError:
             print("** no instance found **")
 
@@ -205,11 +206,14 @@ class HBNBCommand(cmd.Cmd):
 
     def do_all(self, args):
         """ Shows all objects, or all objects of a class"""
+        list_of_str = []
         if args and args.split()[0] not in self.classes.keys():
             print("** class doesn't exist **")
             return
-
-        instance_dict = storage.all(args.split()[0])
+        try:
+            instance_dict = storage.all(eval(args.split()[0]))
+        except IndexError:
+            instance_dict = storage.all()
         list_of_str = []
         for key, val in instance_dict.items():
             if not args or key.startswith(args.split()[0]):
